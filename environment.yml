@@ -1,0 +1,8 @@
+name: mercure-dcm2bids
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.10
+  - dcm2niix
+  - dcm2bids
+  - pydicom
