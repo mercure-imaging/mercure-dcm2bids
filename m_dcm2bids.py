@@ -7,6 +7,7 @@ Simple module to run dcm2bids conversion in mercure
 # Standard Python includes
 import os
 import sys
+import stat
 import json
 import pydicom
 import dcm2bids
@@ -51,32 +52,6 @@ def main(args=sys.argv[1:]):
                 }
 
     
-    # Load the task.json file, which contains the settings for the processing module
-    try:
-        with open(Path(in_folder) / "task.json", "r") as json_file:
-            task = json.load(json_file)
-    except Exception:
-        print("Error: Task file task.json not found")
-        sys.exit(1)
-    
-    
-     # Overwrite default values with settings from the task file (if present)
-    if task.get("process", ""):
-        settings.update(task["process"].get("settings", {}))
-    
-    # Get dcm2bids config and write configuration file
-    bids_config = {"descriptions":settings["descriptions"]}
-
-    current_dir = os.getcwd()
-    config_file = os.path.join(current_dir,"dcm2bids_config.json")
-    with open(config_file, "w") as write_file:
-        json.dump(bids_config, write_file, indent=4)
-    
-    # check if the task.json file exists
-    print(f"The input folder is: ", in_folder)
-    print(f"The output folder is: ", out_folder)
-    print(f"The json file is: ", config_file)
-
     # Set BIDS participant
     bidsID="ID0000001"
     for entry in os.scandir(in_folder):
@@ -94,12 +69,47 @@ def main(args=sys.argv[1:]):
     print(f"Converting patient ID : ", bidsID )
     
     # Generate dcm2bids scaffold folder structure to create valid BIDS output
-    results_path = os.path.join(current_dir, 'BIDS_' + bidsID + "_" + accID)
+    results_dir = 'BIDS_' + bidsID + "_" + accID
+    current_dir = os.getcwd()
+    results_path = os.path.join(current_dir, results_dir)
     if not os.path.exists(results_path):
+        os.umask(0)
         os.makedirs(results_path)
+    p = Path(results_path)
+    p.chmod(p.stat().st_mode | stat.S_IROTH | stat.S_IXOTH | stat.S_IWOTH)
     
-    subprocess.run(["dcm2bids_scaffold","-o",results_path])
+    # create BIDS directory structure
+    subprocess.run(["dcm2bids_scaffold","-o", results_path, "--force"])
+    
+    # Load the task.json file, which contains the settings for the processing module
+    try:
+        with open(Path(in_folder) / "task.json", "r") as json_file:
+            task = json.load(json_file)
+    except Exception:
+        print("Error: Task file task.json not found")
+        sys.exit(1)
+    
+    
+     # Overwrite default values with settings from the task file (if present)
+    if task.get("process", ""):
+        settings.update(task["process"].get("settings", {}))
+    
+    # Get dcm2bids config and write configuration file
+    bids_config = {"descriptions":settings["descriptions"]}
+    config_path = os.path.join(results_path, 'derivatives')
+    if Path(config_path).exists():
+        config_file = os.path.join(config_path,"dcm2bids_config.json")
+    with open(config_file, "w") as write_file:
+        json.dump(bids_config, write_file, indent=4)
+    p = Path(config_file)
+    p.chmod(p.stat().st_mode | stat.S_IROTH | stat.S_IXOTH | stat.S_IWOTH)
 
+    # output directory info
+    print(f"The input folder is: ", in_folder)
+    print(f"The output folder is: ", out_folder)
+    print(f"The json file is: ", config_file)
+
+   
     # Copy source data to output if selected (default befaviour is True).
     source_path = in_folder
     source_copy=settings["source_data"]
@@ -108,19 +118,40 @@ def main(args=sys.argv[1:]):
         if Path(source_path).exists():
             for file in os.listdir(in_folder):
                 if file.endswith(".dcm"):
-                    shutil.move(os.path.join(in_folder, file), source_path)
+                    if '#' in file:
+                        # Split the filename using the string '#'
+                        dest_file = file.split('#')[-1]
+                    else:
+                        dest_file = file
+                    shutil.copy(os.path.join(in_folder, file), os.path.join(source_path,dest_file))
 
     # Run dcm2bids conversion
     subprocess.run(["dcm2bids", "-d", source_path, "-p",bidsID, "-c", config_file,"-o", results_path,"--auto_extract_entities"])
+
+    for root, dirs, files in os.walk(results_path):
+        for d in dirs:
+            os.chmod(os.path.join(root, d), 0o777)
+        for f in files:
+            os.chmod(os.path.join(root, f), 0o777)
 
     # Remove temporary dcm2nixx conversions
     temp_bids_dir = os.path.join(results_path, "tmp_dcm2bids")
     if os.path.isdir(temp_bids_dir):
         shutil.rmtree(temp_bids_dir)
+    
+    # zip BIDS directory structure and send to output directory
+    shutil.make_archive(results_dir, format='zip', root_dir=current_dir, base_dir=results_dir)
+    out_file = os.path.join(current_dir, results_dir + '.zip')
+    if Path(out_file).exists():
+        shutil.move(out_file, out_folder)
 
-    # Copy results to output
-    if Path(results_path).exists():
-        shutil.move(results_path, out_folder)
+    # mercure requires .dcm file to trigger routing, generate a dummy .dcm file to route BIDS results
+    dcm_file_name = os.path.join(current_dir, 'routing_trigger.dcm')
+    with open(dcm_file_name, 'w') as f:
+        f.write('Routing trigger file.')
+    
+    if Path(dcm_file_name).exists():
+        shutil.move(dcm_file_name, out_folder)
 
 
 if __name__ == "__main__":
