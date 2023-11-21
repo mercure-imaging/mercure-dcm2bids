@@ -134,3 +134,4 @@ out/
 
 # local ignores
 *.ipynb
+!mercure_dcm2bids_first_steps_tutorial.ipynb
