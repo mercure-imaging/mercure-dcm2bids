@@ -1,14 +1,14 @@
 # **mercure-dcm2bids**
 <br>
 
-Mercure module to perform DICOM to BIDS conversion using the [dcm2bids](https://github.com/UNFmontreal/Dcm2Bids) converter. dcm2bids reorganises NIfTI files using dcm2niix into the Brain Imaging Data Structure (BIDS). This module runs as a docker container in mercure, it can be added to an existing mercure installation using docker tag : *mercureimaging/mercure-dcm2bids*. The BIDS configuration .json content can be entered directly into the setting of the *Rules* or *Modules* pages of mercure's web-based interactive user interface. The module will generate a .zip file of the BIDS directory structure created using the dcm2bids scaffolding, including the original DICOM files in the *sourcedata* directory and converted BIDS data (see [dcm2bids documentation](https://unfmontreal.github.io/Dcm2Bids) for further details on the scaffold directory structure).
+Mercure module to perform DICOM to BIDS conversion using the [dcm2bids](https://github.com/UNFmontreal/Dcm2Bids) converter. dcm2bids reorganises NIfTI files using dcm2niix into the Brain Imaging Data Structure (BIDS). This module runs as a docker container in mercure, it can be added to an existing mercure installation using docker tag : *mercureimaging/mercure-dcm2bids*. The BIDS configuration .json content can be entered directly into the settings tab in the *Rules* or *Modules* pages of mercure's web-based interactive user interface. The module will generate a .zip file of the BIDS directory structure created using the dcm2bids scaffolding, including the original DICOM files in the *sourcedata* directory and converted BIDS data (see [dcm2bids documentation](https://unfmontreal.github.io/Dcm2Bids) for further details on the scaffold directory structure).
 
 <br>
 
 ## **Installation**
 
 ### Add module to existing mercure installation
-Follow instructions on [mercure website](https://mercure-imaging.org) on how to add a new module. Use the docker tag mercureimaging/mercure-dcm2bids.
+Follow instructions on [mercure website](https://mercure-imaging.org) on how to add a new module. Use the docker tag *mercureimaging/mercure-dcm2bids*.
 
 <br>
 
