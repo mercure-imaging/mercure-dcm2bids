@@ -50,33 +50,38 @@ Full configuration .json text for the first steps example:
 {
   "descriptions": [
     {
-      "dataType": "func",
-      "modalityLabel": "bold",
-      "customLabels": "task-rest",
+      "id": "id-rest"
+      "datatype": "func",
+      "suffix": "bold",
+      "custom_entities": "task-rest",
       "criteria": {
         "SeriesDescription": "Axial EPI-FMRI (Interleaved I to S)*"
       },
-      "sidecarChanges": {
+      "sidecar_changes": {
         "TaskName": "rest"
       }
     },
     {
-      "dataType": "fmap",
-      "modalityLabel": "epi",
-      "customLabels": "dir-AP",
+      "datatype": "fmap",
+      "suffix": "epi",
+      "custom_entities": "dir-AP",
       "criteria": {
         "SeriesDescription": "EPI PE=AP*"
       },
-      "intendedFor": 0
+      "sidecar_changes": {
+        "IntendedFor": "id-rest"
+      }
     },
     {
-      "dataType": "fmap",
-      "modalityLabel": "epi",
-      "customLabels": "dir-PA",
+      "datatype": "fmap",
+      "suffix": "epi",
+      "custom_entities": "dir-PA",
       "criteria": {
         "SeriesDescription": "EPI PE=PA*"
       },
-      "intendedFor": 0
+      "sidecar_changes": {
+        "IntendedFor": "id-rest"
+      }
     }
   ]
 }
