@@ -50,7 +50,7 @@ Full configuration .json text for the first steps example:
 {
   "descriptions": [
     {
-      "id": "id-rest"
+      "id": "id_task-rest"
       "datatype": "func",
       "suffix": "bold",
       "custom_entities": "task-rest",
@@ -69,7 +69,7 @@ Full configuration .json text for the first steps example:
         "SeriesDescription": "EPI PE=AP*"
       },
       "sidecar_changes": {
-        "IntendedFor": "id-rest"
+        "IntendedFor": "id_task-rest"
       }
     },
     {
@@ -80,7 +80,7 @@ Full configuration .json text for the first steps example:
         "SeriesDescription": "EPI PE=PA*"
       },
       "sidecar_changes": {
-        "IntendedFor": "id-rest"
+        "IntendedFor": "id_task-rest"
       }
     }
   ]
