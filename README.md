@@ -50,7 +50,7 @@ Full configuration .json text for the first steps example:
 {
   "descriptions": [
     {
-      "id": "id_task-rest"
+      "id": "id_task-rest",
       "datatype": "func",
       "suffix": "bold",
       "custom_entities": "task-rest",
@@ -64,29 +64,30 @@ Full configuration .json text for the first steps example:
     {
       "datatype": "fmap",
       "suffix": "epi",
-      "custom_entities": "dir-AP",
       "criteria": {
-        "SeriesDescription": "EPI PE=AP*"
+        "SeriesDescription": "EPI PE=*"
       },
       "sidecar_changes": {
-        "IntendedFor": "id_task-rest"
-      }
-    },
-    {
-      "datatype": "fmap",
-      "suffix": "epi",
-      "custom_entities": "dir-PA",
-      "criteria": {
-        "SeriesDescription": "EPI PE=PA*"
-      },
-      "sidecar_changes": {
-        "IntendedFor": "id_task-rest"
+        "intendedFor": ["id_task-rest"]
       }
     }
   ]
 }
 ~~~
 
+<br>
 
+## **dcm2bids project**
 
+### Information
+Documentation: https://unfmontreal.github.io/Dcm2Bids/latest/
+
+Ideas/New features: https://github.com/UNFmontreal/Dcm2Bids/issues
+
+Questions/Issues: https://neurostars.org/tag/dcm2bids
+<br>
+### Acknowledgments
+~~~
+Boré, A., Guay, S., Bedetti, C., Meisler, S., & GuenTher, N. (2023). Dcm2Bids (3.1.1). Zenodo. https://doi.org/10.5281/zenodo.8436509
+~~~
 
