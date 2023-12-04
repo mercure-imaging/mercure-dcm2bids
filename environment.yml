@@ -4,5 +4,5 @@ channels:
 dependencies:
   - python>=3.10
   - dcm2niix
-  - dcm2bids
+  - dcm2bids==3.1.1
   - pydicom
