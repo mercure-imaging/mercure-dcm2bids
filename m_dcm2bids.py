@@ -59,17 +59,16 @@ def main(args=sys.argv[1:]):
             # Load slice
             dcm_file = Path(in_folder) / entry.name
             ds = pydicom.dcmread(dcm_file)
-            PI = ds.PatientID
+            #PI = ds.PatientID
             ACC = ds.AccessionNumber
-            if PI != "":
-                bidsID = PI
-                accID = ACC
+            if ACC != "":
+                bidsID = ACC
                 break
     
     print(f"Converting patient ID : ", bidsID )
     
     # Generate dcm2bids scaffold folder structure to create valid BIDS output
-    results_dir = 'BIDS_' + bidsID + "_" + accID
+    results_dir = 'BIDS_' + bidsID
     current_dir = os.getcwd()
     results_path = os.path.join(current_dir, results_dir)
     if not os.path.exists(results_path):
