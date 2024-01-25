@@ -20,6 +20,12 @@ Follow instructions on [mercure website](https://mercure-imaging.org) on how to 
 
 <br>
 
+### Quick start tutorial
+Follow the ['First steps' tutorial](https://github.com/mercure-imaging/mercure-dcm2bids/blob/main/mercure_dcm2bids_first_steps_tutorial.ipynb) and setup an end-to-end mercure test environment for BIDS conversion on your local machine. The tutorial provides simple steps to guide installation of mercure with the mercure-dcm2bids module, and then to perform a BIDS conversion using a test DICOM dataset. It takes about one hour to complete.
+
+<br>
+
+
 ## **Configuration**
 
 ### Define output directory in *Targets* page in mercure
