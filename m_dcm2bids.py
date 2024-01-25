@@ -37,7 +37,7 @@ def main(args=sys.argv[1:]):
         sys.exit(1)
 
     # Create default values for all module settings
-    settings = {"source_data": "True", 
+    settings = {"source_data": "False", 
                 "descriptions": [ #default searches only for a t1w mprage
                     {
                         "datatype": "anat",
@@ -54,6 +54,8 @@ def main(args=sys.argv[1:]):
     
     # Set BIDS participant
     bidsID="ID0000001"
+    scan_date=""
+    scan_time=""
     for entry in os.scandir(in_folder):
         if entry.name.endswith(".dcm") and not entry.is_dir():
             # Load slice
@@ -61,6 +63,11 @@ def main(args=sys.argv[1:]):
             ds = pydicom.dcmread(dcm_file)
             PI = ds.PatientID
             ACC = ds.AccessionNumber
+            if (ds.StudyDate !="") and (scan_date== ""):
+                scan_date=ds.StudyDate
+            if (ds.StudyTime !="") and (scan_time== ""):
+                scan_time=ds.StudyTime
+            
             if ACC != "":
                 bidsID = ACC
                 break
@@ -68,7 +75,7 @@ def main(args=sys.argv[1:]):
     print(f"Converting patient ID : ", bidsID )
     
     # Generate dcm2bids scaffold folder structure to create valid BIDS output
-    results_dir = 'BIDS_' + bidsID + '_' + PI
+    results_dir = 'BIDS_' + bidsID + '_' + PI + '_DATE_' + scan_date +'_TIME_' + scan_time.split('.')[0]
     current_dir = os.getcwd()
     results_path = os.path.join(current_dir, results_dir)
     if not os.path.exists(results_path):
@@ -109,7 +116,7 @@ def main(args=sys.argv[1:]):
     print(f"The json file is: ", config_file)
 
    
-    # Copy source data to output if selected (default befaviour is True).
+    # Copy source data to output if selected (default befaviour is False).
     source_path = in_folder
     source_copy=settings["source_data"]
     if(source_copy=='True'):
