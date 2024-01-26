@@ -55,7 +55,7 @@ def main(args=sys.argv[1:]):
     # Set BIDS participant
     bidsID="ID0000001"
     scan_date=""
-    scan_time=""
+    
     for entry in os.scandir(in_folder):
         if entry.name.endswith(".dcm") and not entry.is_dir():
             # Load slice
@@ -63,11 +63,8 @@ def main(args=sys.argv[1:]):
             ds = pydicom.dcmread(dcm_file)
             PI = ds.PatientID
             ACC = ds.AccessionNumber
-            if (ds.StudyDate !="") and (scan_date== ""):
-                scan_date=ds.StudyDate
-            if (ds.StudyTime !="") and (scan_time== ""):
-                scan_time=ds.StudyTime
-            
+            if (ds.AcquisitionDateTime !="") and (scan_date== ""):
+                scan_date=ds.AcquisitionDateTime
             if ACC != "":
                 bidsID = ACC
                 break
@@ -75,7 +72,7 @@ def main(args=sys.argv[1:]):
     print(f"Converting patient ID : ", bidsID )
     
     # Generate dcm2bids scaffold folder structure to create valid BIDS output
-    results_dir = 'BIDS_' + bidsID + '_' + PI + '_DATE_' + scan_date +'_TIME_' + scan_time.split('.')[0]
+    results_dir = 'BIDS_' + bidsID + '_' + PI + '_DATETIME_' + scan_date.split('.')[0]
     current_dir = os.getcwd()
     results_path = os.path.join(current_dir, results_dir)
     if not os.path.exists(results_path):
